@@ -14,7 +14,7 @@ A clean, easy-to-use bill splitting calculator that does the math for you. Perfe
 
 ## 🚀 How to Use
 
-1. Open the [Bill Splitter]([https://yourusername.github.io/bill-splitter/bill-splitter.html](https://jenny1178nguyen.github.io/bill-splitter/index.html)) (replace with your actual URL)
+1. Open the [Bill Splitter](https://yourusername.github.io/bill-splitter/index.html)
 2. Add people to your group
 3. Enter the items each person ordered
 4. Add the total tax and tip from your receipt
