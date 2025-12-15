@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💸 Bill Splitter</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 1rem;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: clamp(2rem, 8vw, 3rem);
+            font-weight: 800;
+            margin: 0 0 0.5rem 0;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.2);
+            letter-spacing: -0.02em;
+        }
+
+        .header p {
+            font-size: clamp(0.95rem, 4vw, 1.1rem);
+            opacity: 0.95;
+            font-weight: 500;
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: clamp(1rem, 4vw, 2rem);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            margin-bottom: 1.5rem;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .section-title {
+            font-size: clamp(1.2rem, 5vw, 1.5rem);
+            font-weight: 700;
+            color: #1a202c;
+        }
+
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 0.75rem 1.25rem;
+            font-size: clamp(0.85rem, 3.5vw, 0.95rem);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .person-card {
+            background: #f7fafc;
+            border-radius: 16px;
+            padding: clamp(1rem, 3vw, 1.5rem);
+            margin-bottom: 1rem;
+            border: 2px solid #e2e8f0;
+        }
+
+        .person-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .person-number {
+            background: #667eea;
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+
+        .input {
+            flex: 1;
+            padding: 0.75rem;
+            border-radius: 10px;
+            border: 2px solid #e2e8f0;
+            font-size: clamp(0.9rem, 4vw, 1rem);
+            font-weight: 500;
+            outline: none;
+            transition: border-color 0.2s;
+            min-width: 0;
+        }
+
+        .input:focus {
+            border-color: #667eea;
+        }
+
+        .btn-delete {
+            background: #fed7d7;
+            color: #c53030;
+            border: none;
+            border-radius: 10px;
+            padding: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        .btn-delete:hover {
+            background: #fc8181;
+        }
+
+        .items-container {
+            margin-left: clamp(0.5rem, 2vw, 3rem);
+        }
+
+        .item-row {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .btn-add-item {
+            background: white;
+            color: #667eea;
+            border: 2px dashed #cbd5e0;
+            border-radius: 8px;
+            padding: 0.7rem 1rem;
+            font-size: clamp(0.85rem, 3.5vw, 0.9rem);
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.2s;
+        }
+
+        .btn-add-item:hover {
+            border-color: #667eea;
+            background: #f7fafc;
+        }
+
+        .tax-tip-section {
+            background: #edf2f7;
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .tax-tip-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .input-label {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #4a5568;
+        }
+
+        .btn-calculate {
+            width: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            padding: 1.25rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .btn-calculate:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.5);
+        }
+
+        .results-card {
+            animation: slideUp 0.4s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .results-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin: 0 0 1.5rem 0;
+            color: #1a202c;
+            text-align: center;
+        }
+
+        .result-person-card {
+            background: #f7fafc;
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border: 2px solid #e2e8f0;
+        }
+
+        .result-person-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin: 0 0 1rem 0;
+            color: #2d3748;
+        }
+
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .result-label {
+            color: #718096;
+            font-size: 0.95rem;
+        }
+
+        .result-value {
+            font-weight: 600;
+            font-size: 1.05rem;
+        }
+
+        .result-total-row {
+            border-top: 2px solid #cbd5e0;
+            padding-top: 0.75rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .result-total-label {
+            color: #1a202c;
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .result-total-value {
+            font-weight: 800;
+            font-size: 1.4rem;
+            color: #667eea;
+        }
+
+        .grand-total-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            color: white;
+        }
+
+        .grand-total-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .grand-total-divider {
+            border-top: 2px solid rgba(255,255,255,0.3);
+            padding-top: 0.75rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .grand-total-label {
+            font-size: 1.2rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .grand-total-value {
+            font-weight: 800;
+            font-size: 1.6rem;
+        }
+
+        .icon {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            vertical-align: middle;
+        }
+
+        @media (max-width: 640px) {
+            .tax-tip-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💸 Bill Splitter</h1>
+            <p>Because nobody likes doing math after dinner</p>
+        </div>
+
+        <div class="card">
+            <div class="section-header">
+                <h2 class="section-title">👥 Who's Eating?</h2>
+                <button class="btn" onclick="addPerson()">
+                    <span>+</span> Add Person
+                </button>
+            </div>
+
+            <div id="people-container"></div>
+
+            <div class="tax-tip-section">
+                <h3 style="font-size: 1.2rem; font-weight: 700; margin: 0 0 1rem 0; color: #1a202c;">
+                    🧾 Tax & Tip
+                </h3>
+                <div class="tax-tip-grid">
+                    <div>
+                        <label class="input-label">Tax Amount ($)</label>
+                        <input type="number" step="0.01" placeholder="0.00" id="tax-input" class="input">
+                    </div>
+                    <div>
+                        <label class="input-label">Tip Amount ($)</label>
+                        <input type="number" step="0.01" placeholder="0.00" id="tip-input" class="input">
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn-calculate" onclick="calculateSplit()">
+                🧮 Calculate Split
+            </button>
+        </div>
+
+        <div id="results-container"></div>
+    </div>
+
+    <script>
+        let people = [{ id: 1, name: '', items: [] }];
+        let nextId = 2;
+
+        function addPerson() {
+            people.push({ id: nextId++, name: '', items: [] });
+            renderPeople();
+        }
+
+        function removePerson(id) {
+            if (people.length > 1) {
+                people = people.filter(p => p.id !== id);
+                renderPeople();
+            }
+        }
+
+        function updatePersonName(id, name) {
+            const person = people.find(p => p.id === id);
+            if (person) person.name = name;
+        }
+
+        function addItem(personId) {
+            const person = people.find(p => p.id === personId);
+            if (person) {
+                person.items.push({ id: nextId++, price: '' });
+                renderPeople();
+            }
+        }
+
+        function removeItem(personId, itemId) {
+            const person = people.find(p => p.id === personId);
+            if (person) {
+                person.items = person.items.filter(i => i.id !== itemId);
+                renderPeople();
+            }
+        }
+
+        function updateItemPrice(personId, itemId, price) {
+            const person = people.find(p => p.id === personId);
+            if (person) {
+                const item = person.items.find(i => i.id === itemId);
+                if (item) item.price = price;
+            }
+        }
+
+        function renderPeople() {
+            const container = document.getElementById('people-container');
+            container.innerHTML = people.map((person, index) => `
+                <div class="person-card">
+                    <div class="person-header">
+                        <div class="person-number">${index + 1}</div>
+                        <input 
+                            type="text" 
+                            placeholder="Person ${index + 1}" 
+                            value="${person.name}"
+                            class="input"
+                            onchange="updatePersonName(${person.id}, this.value)"
+                        >
+                        ${people.length > 1 ? `
+                            <button class="btn-delete" onclick="removePerson(${person.id})">
+                                🗑️
+                            </button>
+                        ` : ''}
+                    </div>
+                    <div class="items-container">
+                        ${person.items.map(item => `
+                            <div class="item-row">
+                                <span style="color: #718096; flex-shrink: 0;">💲</span>
+                                <input 
+                                    type="number" 
+                                    step="0.01" 
+                                    placeholder="Price"
+                                    value="${item.price}"
+                                    class="input"
+                                    onchange="updateItemPrice(${person.id}, ${item.id}, this.value)"
+                                >
+                                <button 
+                                    style="background: transparent; color: #718096; border: none; padding: 0.5rem; cursor: pointer; border-radius: 6px; flex-shrink: 0;"
+                                    onclick="removeItem(${person.id}, ${item.id})"
+                                    onmouseover="this.style.background='#fed7d7'; this.style.color='#c53030'"
+                                    onmouseout="this.style.background='transparent'; this.style.color='#718096'"
+                                >
+                                    🗑️
+                                </button>
+                            </div>
+                        `).join('')}
+                        <button class="btn-add-item" onclick="addItem(${person.id})">
+                            + Add Item
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function calculateSplit() {
+            const tax = parseFloat(document.getElementById('tax-input').value) || 0;
+            const tip = parseFloat(document.getElementById('tip-input').value) || 0;
+
+            const subtotals = people.map((p, index) => ({
+                id: p.id,
+                name: p.name || `Person ${index + 1}`,
+                subtotal: p.items.reduce((sum, item) => sum + (parseFloat(item.price) || 0), 0)
+            }));
+
+            const totalSubtotal = subtotals.reduce((sum, p) => sum + p.subtotal, 0);
+
+            const breakdown = subtotals.map(person => {
+                const proportion = totalSubtotal > 0 ? person.subtotal / totalSubtotal : 0;
+                const personTax = tax * proportion;
+                const personTip = tip * proportion;
+                const total = person.subtotal + personTax + personTip;
+
+                return {
+                    ...person,
+                    proportion: proportion * 100,
+                    tax: personTax,
+                    tip: personTip,
+                    total
+                };
+            });
+
+            const grandTotal = totalSubtotal + tax + tip;
+
+            renderResults(breakdown, totalSubtotal, tax, tip, grandTotal);
+        }
+
+        function renderResults(breakdown, totalSubtotal, totalTax, totalTip, grandTotal) {
+            const container = document.getElementById('results-container');
+            container.innerHTML = `
+                <div class="card results-card">
+                    <h2 class="results-title">💰 The Damage</h2>
+                    
+                    ${breakdown.map(person => `
+                        <div class="result-person-card">
+                            <h3 class="result-person-name">${person.name}</h3>
+                            <div>
+                                <div class="result-row">
+                                    <span class="result-label">Subtotal</span>
+                                    <span class="result-value">$${person.subtotal.toFixed(2)}</span>
+                                </div>
+                                <div class="result-row">
+                                    <span class="result-label">Tax (${person.proportion.toFixed(1)}%)</span>
+                                    <span class="result-value">$${person.tax.toFixed(2)}</span>
+                                </div>
+                                <div class="result-row">
+                                    <span class="result-label">Tip (${person.proportion.toFixed(1)}%)</span>
+                                    <span class="result-value">$${person.tip.toFixed(2)}</span>
+                                </div>
+                                <div class="result-total-row">
+                                    <span class="result-total-label">TOTAL</span>
+                                    <span class="result-total-value">$${person.total.toFixed(2)}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+
+                    <div class="grand-total-card">
+                        <div class="grand-total-row">
+                            <span style="font-size: 0.95rem; opacity: 0.9;">Total Subtotal</span>
+                            <span style="font-weight: 600; font-size: 1.05rem;">$${totalSubtotal.toFixed(2)}</span>
+                        </div>
+                        <div class="grand-total-row">
+                            <span style="font-size: 0.95rem; opacity: 0.9;">Total Tax</span>
+                            <span style="font-weight: 600; font-size: 1.05rem;">$${totalTax.toFixed(2)}</span>
+                        </div>
+                        <div class="grand-total-row">
+                            <span style="font-size: 0.95rem; opacity: 0.9;">Total Tip</span>
+                            <span style="font-weight: 600; font-size: 1.05rem;">$${totalTip.toFixed(2)}</span>
+                        </div>
+                        <div class="grand-total-divider">
+                            <span class="grand-total-label">Grand Total</span>
+                            <span class="grand-total-value">$${grandTotal.toFixed(2)}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Initial render
+        renderPeople();
+    </script>
+</body>
+</html>
