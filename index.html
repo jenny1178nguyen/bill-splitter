@@ -2,13 +2,16 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>💸 Bill Splitter</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
@@ -16,6 +19,8 @@
             min-height: 100vh;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             padding: 1rem;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
         .container {
@@ -71,14 +76,16 @@
             color: white;
             border: none;
             border-radius: 12px;
-            padding: 0.75rem 1.25rem;
-            font-size: clamp(0.85rem, 3.5vw, 0.95rem);
+            padding: 0.9rem 1.5rem;
+            font-size: clamp(0.9rem, 3.5vw, 1rem);
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
+            min-height: 44px;
+            touch-action: manipulation;
         }
 
         .btn:hover {
@@ -87,6 +94,14 @@
 
         .btn:active {
             transform: scale(0.98);
+        }
+
+        .btn-secondary {
+            background: #718096;
+        }
+
+        .btn-danger {
+            background: #e53e3e;
         }
 
         .person-card {
@@ -120,14 +135,17 @@
 
         .input {
             flex: 1;
-            padding: 0.75rem;
+            padding: 0.9rem;
             border-radius: 10px;
             border: 2px solid #e2e8f0;
-            font-size: clamp(0.9rem, 4vw, 1rem);
+            font-size: clamp(1rem, 4vw, 1.1rem);
             font-weight: 500;
             outline: none;
             transition: border-color 0.2s;
             min-width: 0;
+            min-height: 44px;
+            -webkit-appearance: none;
+            appearance: none;
         }
 
         .input:focus {
@@ -139,10 +157,17 @@
             color: #c53030;
             border: none;
             border-radius: 10px;
-            padding: 0.75rem;
+            padding: 0.9rem;
             cursor: pointer;
             transition: all 0.2s;
             flex-shrink: 0;
+            min-width: 44px;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            touch-action: manipulation;
         }
 
         .btn-delete:hover {
@@ -165,12 +190,14 @@
             color: #667eea;
             border: 2px dashed #cbd5e0;
             border-radius: 8px;
-            padding: 0.7rem 1rem;
-            font-size: clamp(0.85rem, 3.5vw, 0.9rem);
+            padding: 0.9rem 1rem;
+            font-size: clamp(0.9rem, 3.5vw, 1rem);
             font-weight: 600;
             cursor: pointer;
             width: 100%;
             transition: all 0.2s;
+            min-height: 44px;
+            touch-action: manipulation;
         }
 
         .btn-add-item:hover {
@@ -205,19 +232,26 @@
             color: white;
             border: none;
             border-radius: 16px;
-            padding: 1.25rem;
-            font-size: 1.2rem;
+            padding: 1.5rem;
+            font-size: clamp(1.1rem, 5vw, 1.3rem);
             font-weight: 700;
             cursor: pointer;
             box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
             transition: all 0.3s;
             text-transform: uppercase;
             letter-spacing: 0.05em;
+            min-height: 60px;
+            touch-action: manipulation;
+            margin-bottom: 1rem;
         }
 
         .btn-calculate:hover {
             transform: translateY(-2px);
             box-shadow: 0 15px 40px rgba(102, 126, 234, 0.5);
+        }
+
+        .btn-calculate:active {
+            transform: translateY(0);
         }
 
         .results-card {
@@ -330,16 +364,78 @@
             font-size: 1.6rem;
         }
 
-        .icon {
-            display: inline-block;
-            width: 18px;
-            height: 18px;
-            vertical-align: middle;
+        .history-item {
+            background: #f7fafc;
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            border: 2px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .history-info {
+            flex: 1;
+        }
+
+        .history-date {
+            font-size: 0.85rem;
+            color: #718096;
+            margin-bottom: 0.25rem;
+        }
+
+        .history-summary {
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .history-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-small {
+            padding: 0.6rem 1rem;
+            font-size: 0.85rem;
+            min-height: 36px;
         }
 
         @media (max-width: 640px) {
             .tax-tip-grid {
                 grid-template-columns: 1fr;
+            }
+            
+            .section-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            body {
+                padding: 0.75rem;
+            }
+            
+            .card {
+                border-radius: 16px;
+            }
+
+            .history-item {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .history-actions {
+                width: 100%;
+            }
+
+            .btn-small {
+                flex: 1;
             }
         }
     </style>
@@ -348,7 +444,7 @@
     <div class="container">
         <div class="header">
             <h1>💸 Bill Splitter</h1>
-            <p>Because nobody likes doing math after dinner</p>
+            <p>Jenny's silly little tool</p>
         </div>
 
         <div class="card">
@@ -368,11 +464,11 @@
                 <div class="tax-tip-grid">
                     <div>
                         <label class="input-label">Tax Amount ($)</label>
-                        <input type="number" step="0.01" placeholder="0.00" id="tax-input" class="input">
+                        <input type="number" step="0.01" placeholder="0.00" id="tax-input" class="input" inputmode="decimal" onchange="saveToStorage()">
                     </div>
                     <div>
                         <label class="input-label">Tip Amount ($)</label>
-                        <input type="number" step="0.01" placeholder="0.00" id="tip-input" class="input">
+                        <input type="number" step="0.01" placeholder="0.00" id="tip-input" class="input" inputmode="decimal" onchange="saveToStorage()">
                     </div>
                 </div>
             </div>
@@ -380,30 +476,89 @@
             <button class="btn-calculate" onclick="calculateSplit()">
                 🧮 Calculate Split
             </button>
+
+            <button class="btn btn-secondary" onclick="clearAll()" style="width: 100%;">
+                🔄 Clear All
+            </button>
         </div>
 
         <div id="results-container"></div>
+
+        <div class="card" id="history-section" style="display: none;">
+            <div class="section-header">
+                <h2 class="section-title">📜 History</h2>
+                <button class="btn btn-danger btn-small" onclick="clearAllHistory()">
+                    Clear All
+                </button>
+            </div>
+            <div id="history-container"></div>
+        </div>
     </div>
 
     <script>
         let people = [{ id: 1, name: '', items: [] }];
         let nextId = 2;
+        let history = [];
+
+        // Load saved data on page load
+        window.addEventListener('DOMContentLoaded', function() {
+            loadFromStorage();
+            renderPeople();
+            renderHistory();
+        });
+
+        // Save to localStorage
+        function saveToStorage() {
+            try {
+                localStorage.setItem('billSplitterPeople', JSON.stringify(people));
+                localStorage.setItem('billSplitterTax', document.getElementById('tax-input').value);
+                localStorage.setItem('billSplitterTip', document.getElementById('tip-input').value);
+                localStorage.setItem('billSplitterHistory', JSON.stringify(history));
+                localStorage.setItem('billSplitterNextId', nextId.toString());
+            } catch (e) {
+                console.log('Could not save to localStorage');
+            }
+        }
+
+        // Load from localStorage
+        function loadFromStorage() {
+            try {
+                const savedPeople = localStorage.getItem('billSplitterPeople');
+                const savedTax = localStorage.getItem('billSplitterTax');
+                const savedTip = localStorage.getItem('billSplitterTip');
+                const savedHistory = localStorage.getItem('billSplitterHistory');
+                const savedNextId = localStorage.getItem('billSplitterNextId');
+
+                if (savedPeople) people = JSON.parse(savedPeople);
+                if (savedTax) document.getElementById('tax-input').value = savedTax;
+                if (savedTip) document.getElementById('tip-input').value = savedTip;
+                if (savedHistory) history = JSON.parse(savedHistory);
+                if (savedNextId) nextId = parseInt(savedNextId);
+            } catch (e) {
+                console.log('Could not load from localStorage');
+            }
+        }
 
         function addPerson() {
             people.push({ id: nextId++, name: '', items: [] });
             renderPeople();
+            saveToStorage();
         }
 
         function removePerson(id) {
             if (people.length > 1) {
                 people = people.filter(p => p.id !== id);
                 renderPeople();
+                saveToStorage();
             }
         }
 
         function updatePersonName(id, name) {
             const person = people.find(p => p.id === id);
-            if (person) person.name = name;
+            if (person) {
+                person.name = name;
+                saveToStorage();
+            }
         }
 
         function addItem(personId) {
@@ -411,6 +566,7 @@
             if (person) {
                 person.items.push({ id: nextId++, price: '' });
                 renderPeople();
+                saveToStorage();
             }
         }
 
@@ -419,6 +575,7 @@
             if (person) {
                 person.items = person.items.filter(i => i.id !== itemId);
                 renderPeople();
+                saveToStorage();
             }
         }
 
@@ -426,8 +583,50 @@
             const person = people.find(p => p.id === personId);
             if (person) {
                 const item = person.items.find(i => i.id === itemId);
-                if (item) item.price = price;
+                if (item) {
+                    item.price = price;
+                    saveToStorage();
+                }
             }
+        }
+
+        function clearAll() {
+            if (confirm('Clear all current data? (History will be saved)')) {
+                people = [{ id: nextId++, name: '', items: [] }];
+                document.getElementById('tax-input').value = '';
+                document.getElementById('tip-input').value = '';
+                document.getElementById('results-container').innerHTML = '';
+                renderPeople();
+                saveToStorage();
+            }
+        }
+
+        function deleteHistory(index) {
+            if (confirm('Delete this calculation from history?')) {
+                history.splice(index, 1);
+                saveToStorage();
+                renderHistory();
+            }
+        }
+
+        function clearAllHistory() {
+            if (confirm('Clear all history? This cannot be undone!')) {
+                history = [];
+                saveToStorage();
+                renderHistory();
+            }
+        }
+
+        function loadFromHistory(index) {
+            const saved = history[index];
+            people = JSON.parse(saved.people);
+            document.getElementById('tax-input').value = saved.tax;
+            document.getElementById('tip-input').value = saved.tip;
+            nextId = Math.max(...people.map(p => p.id), ...people.flatMap(p => p.items.map(i => i.id))) + 1;
+            renderPeople();
+            saveToStorage();
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function renderPeople() {
@@ -452,7 +651,7 @@
                     <div class="items-container">
                         ${person.items.map(item => `
                             <div class="item-row">
-                                <span style="color: #718096; flex-shrink: 0;">💲</span>
+                                <span style="color: #718096; flex-shrink: 0; font-size: 1.2rem;">💲</span>
                                 <input 
                                     type="number" 
                                     step="0.01" 
@@ -460,9 +659,10 @@
                                     value="${item.price}"
                                     class="input"
                                     onchange="updateItemPrice(${person.id}, ${item.id}, this.value)"
+                                    inputmode="decimal"
                                 >
                                 <button 
-                                    style="background: transparent; color: #718096; border: none; padding: 0.5rem; cursor: pointer; border-radius: 6px; flex-shrink: 0;"
+                                    style="background: transparent; color: #718096; border: none; padding: 0.75rem; cursor: pointer; border-radius: 6px; flex-shrink: 0; min-width: 44px; min-height: 44px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; touch-action: manipulation;"
                                     onclick="removeItem(${person.id}, ${item.id})"
                                     onmouseover="this.style.background='#fed7d7'; this.style.color='#c53030'"
                                     onmouseout="this.style.background='transparent'; this.style.color='#718096'"
@@ -472,7 +672,7 @@
                             </div>
                         `).join('')}
                         <button class="btn-add-item" onclick="addItem(${person.id})">
-                            + Add Item
+                            + Add Food or Drink
                         </button>
                     </div>
                 </div>
@@ -508,7 +708,54 @@
 
             const grandTotal = totalSubtotal + tax + tip;
 
+            // Save to history
+            const historyItem = {
+                date: new Date().toISOString(),
+                people: JSON.stringify(people),
+                tax: tax.toString(),
+                tip: tip.toString(),
+                total: grandTotal,
+                peopleCount: people.length
+            };
+            history.unshift(historyItem); // Add to beginning
+            if (history.length > 20) history = history.slice(0, 20); // Keep only last 20
+            saveToStorage();
+            renderHistory();
+
             renderResults(breakdown, totalSubtotal, tax, tip, grandTotal);
+        }
+
+        function renderHistory() {
+            const container = document.getElementById('history-container');
+            const section = document.getElementById('history-section');
+            
+            if (history.length === 0) {
+                section.style.display = 'none';
+                return;
+            }
+
+            section.style.display = 'block';
+            
+            container.innerHTML = history.map((item, index) => {
+                const date = new Date(item.date);
+                const dateStr = date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                return `
+                    <div class="history-item">
+                        <div class="history-info">
+                            <div class="history-date">${dateStr}</div>
+                            <div class="history-summary">${item.peopleCount} people • Total: $${item.total.toFixed(2)}</div>
+                        </div>
+                        <div class="history-actions">
+                            <button class="btn btn-small" onclick="loadFromHistory(${index})">
+                                Load
+                            </button>
+                            <button class="btn btn-danger btn-small" onclick="deleteHistory(${index})">
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
         }
 
         function renderResults(breakdown, totalSubtotal, totalTax, totalTip, grandTotal) {
